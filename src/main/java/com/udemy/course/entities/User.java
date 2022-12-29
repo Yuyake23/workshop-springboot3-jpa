@@ -2,20 +2,24 @@ package com.udemy.course.entities;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tb-user")
+@Table(name = "tb_user")
 public class User implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -23,6 +27,10 @@ public class User implements Serializable {
 	private String email;
 	private String phone;
 	private String password;
+
+	@OneToMany
+	@JoinColumn(name = "client_id")
+	private List<Order> orders = new ArrayList<>();
 
 	public User() {
 		super();
@@ -75,6 +83,10 @@ public class User implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public List<Order> getOrders() {
+		return orders;
 	}
 
 	@Override
