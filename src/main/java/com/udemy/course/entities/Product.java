@@ -99,7 +99,7 @@ public class Product implements Serializable {
 
 	@JsonIgnore
 	public Set<Order> getOrders() {
-		return items.parallelStream().map(oi -> oi.getOrder()).collect(Collectors.toSet());
+		return items.stream().map(oi -> oi.getOrder()).collect(Collectors.toSet());
 	}
 
 	@Override
