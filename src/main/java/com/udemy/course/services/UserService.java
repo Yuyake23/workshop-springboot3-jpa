@@ -18,10 +18,14 @@ public class UserService {
 	public List<User> findAll() {
 		return userRepository.findAll();
 	}
-	
+
 	public User findById(Long id) {
 		Optional<User> u = userRepository.findById(id);
 		return u.get();
+	}
+
+	public User insert(User user) {
+		return userRepository.save(user);
 	}
 
 }
