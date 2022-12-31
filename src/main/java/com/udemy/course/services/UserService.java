@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.udemy.course.entities.User;
 import com.udemy.course.repositories.UserRepository;
+import com.udemy.course.services.exceptions.DatabaseException;
 import com.udemy.course.services.exceptions.ResourceNotFoundException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class UserService {
@@ -28,15 +33,25 @@ public class UserService {
 	public User insert(User user) {
 		return userRepository.save(user);
 	}
-	
+
 	public void delete(Long id) {
-		userRepository.deleteById(id);
+		try {
+			userRepository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException();
+		}
 	}
-	
+
 	public User update(Long id, User updatedUser) {
-		User currentUser = userRepository.getReferenceById(id);
-		updateData(currentUser, updatedUser);
-		return userRepository.save(currentUser);
+		try {
+			User currentUser = userRepository.getReferenceById(id);
+			updateData(currentUser, updatedUser);
+			return userRepository.save(currentUser);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 
 	private void updateData(User currentUser, User updatedUser) {
